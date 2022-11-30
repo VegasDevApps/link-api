@@ -1,0 +1,20 @@
+POST http://localhost:3000/api/feed
+Content-Type: application/json
+
+{
+    "body": "This is the new post number 3!"
+}
+
+### Get all posts
+GET http://localhost:3000/api/feed
+
+### Update post
+PUT http://localhost:3000/api/feed/2
+Content-Type: application/json
+
+{
+    "body": "Updated post"
+}
+
+### Delete post
+DELETE http://localhost:3000/api/feed/2
