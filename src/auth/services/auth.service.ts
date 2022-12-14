@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { from, Observable } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, take } from 'rxjs/operators';
 
 import { UserEntity } from '../models/user.entity';
 import { User } from '../models/user.interface';
@@ -37,8 +37,26 @@ export class AuthService {
     }
 
     validateUser(email: string, password: string): Observable<User>{
-       //return from(this.userRepository.findOneBy({ email }, {select: ['id', 'firstName', 'lastName', 'email', 'password', 'role']}));
-       return from(this.userRepository.findOneBy({email: email})).pipe(
+       
+        // Define which fields to select (no feeds posts needed)
+        const fieldsToSelect = {
+            id: true, 
+            email: true, 
+            firstName: true, 
+            lastName: true, 
+            role: true, 
+            password: true 
+        };
+
+        // Where condition
+        const query = {
+            where: {
+                email
+            }, 
+            select: fieldsToSelect
+        }
+
+        return from(this.userRepository.findOne(query)).pipe(
         switchMap((user: User) => {
             if(user){
                 return from(bcrypt.compare(password, user.password)).pipe(map((isValid: boolean) => {
