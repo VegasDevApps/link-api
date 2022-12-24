@@ -80,4 +80,9 @@ export class AuthService {
             })
         )
     }
+
+    findUserById(id: number): Observable<User> {
+        // check if password is returned also (shouldn't)
+        return from(this.userRepository.findOne({ where: {id}, relations: ['feedPosts']}));
+    }
 }
