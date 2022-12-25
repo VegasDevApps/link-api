@@ -22,10 +22,22 @@ export class FeedService {
         return from(this.feedPostRepository.find());
     }
 
+    // findPosts(take: number = 10, skip: number = 0): Observable<FeedPost[]> {
+    //     return from(this.feedPostRepository.findAndCount({ take, skip }).then(([posts]) => {
+    //         return <FeedPost[]>posts;
+    //     }));
+    // }
+
     findPosts(take: number = 10, skip: number = 0): Observable<FeedPost[]> {
-        return from(this.feedPostRepository.findAndCount({ take, skip }).then(([posts]) => {
-            return <FeedPost[]>posts;
-        }));
+        return from(
+            this.feedPostRepository
+                .createQueryBuilder('post')
+                .innerJoinAndSelect('post.atutor', 'author')
+                .orderBy('post.createdAt', 'DESC')
+                .take(take)
+                .skip(skip)
+                .getMany()    
+            );
     }
 
     updatePost(id: number, feedPost: FeedPost): Observable<UpdateResult>{
