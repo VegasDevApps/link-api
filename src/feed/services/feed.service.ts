@@ -32,7 +32,7 @@ export class FeedService {
         return from(
             this.feedPostRepository
                 .createQueryBuilder('post')
-                .innerJoinAndSelect('post.atutor', 'author')
+                .innerJoinAndSelect('post.author', 'author')
                 .orderBy('post.createdAt', 'DESC')
                 .take(take)
                 .skip(skip)
