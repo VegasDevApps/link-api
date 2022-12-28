@@ -1,9 +1,9 @@
 POST http://localhost:3000/api/feed
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyLCJmaXJzdE5hbWUiOiJWZWdhcyIsImxhc3ROYW1lIjoiUmljbyIsImVtYWlsIjoidmVnYXNAdmVnYXMuY29tIiwicm9sZSI6InVzZXIifSwiaWF0IjoxNjcwODczMzQ3LCJleHAiOjE2NzA4NzY5NDd9.EaD2aBOBQOrya-ecelJi6j6VHD98cGLxHVGRtfhPJiw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJmaXJzdE5hbWUiOiJWZWdhcyIsImxhc3ROYW1lIjoiUmljbyIsImVtYWlsIjoidmVnYXMxQHZlZ2FzLmNvbSIsInJvbGUiOiJ1c2VyIn0sImlhdCI6MTY3MjIxNTgyNiwiZXhwIjoxNjcyMjE5NDI2fQ.1zaEHuEc0SPDtJu5UDWvccN83MG9DHwiEXKePI4Tc8U
 
 {
-    "body": "This is the new post number 1!"
+    "body": "This is the test!"
 }
 
 

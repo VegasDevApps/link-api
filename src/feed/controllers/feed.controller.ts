@@ -14,14 +14,16 @@ export class FeedController {
 
     constructor(private readonly feedService: FeedService){}
 
-    @Roles(Role.ADMIN)
-    @UseGuards(JwtGuard, RolesGuard)
+    //@Roles(Role.ADMIN) Chech id removed
+    //@UseGuards(JwtGuard, RolesGuard)
+    @UseGuards(JwtGuard)
     @Post()
     create(@Body() feedPost: FeedPost, @Request() req): Observable<FeedPost> {
-        console.log(feedPost);
+        console.log('Create controller: ', feedPost);
         return this.feedService.createPost(req.user, feedPost);
     }
-
+    
+    @UseGuards(JwtGuard)
     @Get()
     findSelected(
         @Query('take') take: number = 1, 
