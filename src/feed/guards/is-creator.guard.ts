@@ -4,14 +4,14 @@ import { Role } from 'src/auth/models/role.enum';
 import { User } from 'src/auth/models/user.interface';
 
 
-import { AuthService } from 'src/auth/services/auth.service';
+import { UserService } from 'src/auth/services/user.service';
 import { FeedPost } from '../models/post.interface';
 import { FeedService } from '../services/feed.service';
 
 @Injectable()
 export class IsCreatorGuard implements CanActivate {
 
-  constructor(private authService: AuthService, private feedSerice: FeedService){}
+  constructor(private userService: UserService, private feedSerice: FeedService){}
 
   canActivate(
     context: ExecutionContext,
@@ -27,7 +27,7 @@ export class IsCreatorGuard implements CanActivate {
     const userId = user.id;
     const feedId = params.id;
    
-    return this.authService.findUserById(userId).pipe(
+    return this.userService.findUserById(userId).pipe(
       switchMap((user: User) => {
         return this.feedSerice.findPostById(feedId).pipe(map((feed: FeedPost) => {
           let isAuthor = user.id === feed.author.id;
