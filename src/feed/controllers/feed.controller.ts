@@ -51,4 +51,10 @@ export class FeedController {
     delete(@Param('id') id: number): Observable<DeleteResult>{
         return this.feedService.deletePost(id);
     }
+
+    @Get('image/:fileName')
+    findImageByName(@Param('fileName') fileName: string) {
+        
+    }
+
 }
