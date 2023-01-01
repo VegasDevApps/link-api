@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, Res, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
@@ -53,8 +53,10 @@ export class FeedController {
     }
 
     @Get('image/:fileName')
-    findImageByName(@Param('fileName') fileName: string) {
-        
+    findImageByName(@Param('fileName') fileName: string, @Res() res) {
+        if (!fileName || ['null', '[null]'].includes(fileName)) return;
+
+        return res.sendFile(fileName, { root: './images' });
     }
 
 }
