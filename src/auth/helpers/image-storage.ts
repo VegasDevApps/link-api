@@ -21,7 +21,6 @@ export const saveImageToStorage = {
         filename: (req, file, cb) => {
             const fileExtention: string = path.extname(file.originalname);
             const fileName: string = uuidv4() + fileExtention;
-            console.log(2, file.originalname)
             cb(null, fileName);
         }
     }),
@@ -33,7 +32,7 @@ export const saveImageToStorage = {
 };
 
 export const isFileExstentionSafe = (fullFilePath: string): Observable<boolean> => {
-    return from(FileType.fileTypeFromFile(fullFilePath)).pipe(
+    return from(FileType.fromFile(fullFilePath)).pipe(
         switchMap((fileExtentionAndMime: { ext: validFileExtantion, mime: validMimeType }) => {
             
             if (!fileExtentionAndMime) return of(false);

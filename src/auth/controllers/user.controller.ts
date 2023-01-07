@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { UpdateResult } from 'typeorm';
 import { JwtGuard } from '../guards/jwt.guard';
 
@@ -17,7 +18,7 @@ export class UserController {
     @UseGuards(JwtGuard)
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', saveImageToStorage))
-    uploadImage(@UploadedFile() file: Express.Multer.File, @Request() req): Observable<UpdateResult | { error: string }> {
+    uploadImage(@UploadedFile() file: Express.Multer.File, @Request() req): Observable<{ modifiedFileName: string } | { error: string }> {
         
         const filename = file?.filename;
         if (!filename) return of({ error: 'File must be a png, jpg/jpeg' });
@@ -29,7 +30,11 @@ export class UserController {
             switchMap((isFileLegit: boolean) => {
                 if (isFileLegit) {
                     const userId = req.user.id;
-                    return this.userService.updateUserImageById(userId, fullImagePath);
+                    return this.userService.updateUserImageById(userId, filename).pipe(
+                        map(() => ({
+                            modifiedFileName: file.filename
+                        }))
+                    );
                 }
                 removeFile(fullImagePath);
                 return of({ error: 'File content does not match extention!' });
@@ -51,7 +56,7 @@ export class UserController {
 
     @UseGuards(JwtGuard)
     @Get('image-name')
-    findUserImageName(@Request() req, @Res() res): Observable<{imageName: string}> {
+    findUserImageName(@Request() req): Observable<{imageName: string}> {
         const userId = req.user.id;
         return this.userService.findImageNameByUserId(userId).pipe(
             switchMap((imageName: string) => {

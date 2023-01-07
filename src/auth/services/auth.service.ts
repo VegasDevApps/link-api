@@ -24,11 +24,13 @@ export class AuthService {
 
         return this.hashPassword(user.password).pipe(
             switchMap((hashedPassword: string) => {
+                console.log(1, user)
                 return from(this.userRepository.save({
                     ...user,
                     password: hashedPassword
                 })).pipe(
                     map((user: User) => {
+                        console.log(2, user)
                         delete user.password;
                         return user;
                     })
