@@ -3,18 +3,21 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-    "email": "vegas1@vegas.com",
+    "email": "asd@asd.ru",
     "password": "123456",
-    "lastName": "Rico",
-    "firstName": "Vegas"
+    "lastName": "Рыков",
+    "firstName": "Жека"
 }
 
 ### Login
+### asd@asd.ru 123456
+### co@mo.ru 123456
+### vegas1@vegas.com 123456
 POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "vegas1@vegas.com",
+    "email": "co@mo.ru",
     "password": "123456"
 }
 

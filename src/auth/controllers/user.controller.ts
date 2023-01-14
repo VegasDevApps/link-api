@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { UpdateResult } from 'typeorm';
+import { FriendRequest } from '../models/friend-request.interface';
 import { JwtGuard } from '../guards/jwt.guard';
 
 
 import { isFileExstentionSafe, removeFile, saveImageToStorage } from '../helpers/image-storage';
+import { User } from '../models/user.interface';
 import { UserService } from '../services/user.service';
 
 @Controller('user')
@@ -63,5 +64,17 @@ export class UserController {
                 return of({ imageName });
             })
         );
+    }
+
+    @UseGuards(JwtGuard)
+    @Get(':userId')
+    findUserById(@Param('userId') userId: number): Observable<User> {
+        return this.userService.findUserById(userId);
+    }
+
+    @UseGuards(JwtGuard)
+    @Get('friend-request/send/:receiverId')
+    sendFriendRequest(@Param('receiverId') receiverId: number): Observable<FriendRequest | { error: string }> {
+        return this.userService.sendFriendRequest(receiverId);
     }
 }
