@@ -4,7 +4,7 @@ import { Observable, from, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Repository, UpdateResult } from 'typeorm';
 import { FriendRequestEntity } from '../models/friend-request.entity';
-import { FriendRequest } from '../models/friend-request.interface';
+import { FriendRequest, FriendRequestStatus, FriendRequest_Status } from '../models/friend-request.interface';
 import { UserEntity } from '../models/user.entity';
 import { User } from '../models/user.interface';
 
@@ -67,5 +67,50 @@ export class UserService {
                 );
             })
         );
+    }
+
+    getFriendRequestStatus(receiverId: number, currentUser: User): Observable<FriendRequestStatus>{
+        return from(this.findUserById(receiverId)).pipe(
+            switchMap((receiver: User) => {
+                return from(this.friendRequestRepository.findOne(
+                    { 
+                        where: [
+                            {
+                                creator: currentUser,
+                                receiver: receiver
+                            },{
+                                creator: receiver,
+                                receiver: currentUser
+                            }
+                        ],
+                        relations: ['creator', 'receiver']
+                    }));
+            }),
+            switchMap((friendRequest: FriendRequest) => {
+                if(friendRequest?.receiver.id === currentUser.id){
+                    return of({ status: 'waiting-for-current-user-response' as FriendRequest_Status });    
+                }
+                return of({ status: friendRequest?.status || 'not-sent' });
+            })
+        );
+    }
+
+    getFriendRequestById(friendRequestId: number): Observable<FriendRequest> {
+        return from(this.friendRequestRepository.findOne({where: {id: friendRequestId}}));
+    }
+
+    respondToFriendRequest(friendRequestId: number, statusRespond: FriendRequest_Status): Observable<FriendRequestStatus>{
+        return from(this.getFriendRequestById(friendRequestId)).pipe(
+            switchMap((friendRequest: FriendRequest) => {
+                return from(this.friendRequestRepository.save({
+                    ...friendRequest,
+                    status: statusRespond
+                }));
+            })
+        );
+    }
+
+    getFriendRequestFromRecipients(user: User): Observable<FriendRequest[]>{
+        return from(this.friendRequestRepository.find({ where: { receiver: user } }));
     }
 }
