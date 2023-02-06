@@ -18,7 +18,7 @@ export class UserService {
 
     findUserById(id: number): Observable<User> {
 
-        return from(this.userRepository.findOne({ where: { id }, relations: ['feedPosts'] }));
+        return from(this.userRepository.findOne({ where: { id } }));
     }
 
     updateUserImageById(id: null, imagePath: string): Observable<UpdateResult> {
@@ -83,7 +83,7 @@ export class UserService {
                                 receiver: currentUser
                             }
                         ],
-                        relations: ['creator', 'receiver']
+                        relations: { creator: true, receiver: true }
                     }));
             }),
             switchMap((friendRequest: FriendRequest) => {
@@ -111,6 +111,9 @@ export class UserService {
     }
 
     getFriendRequestFromRecipients(user: User): Observable<FriendRequest[]>{
-        return from(this.friendRequestRepository.find({ where: { receiver: user } }));
+        return from(this.friendRequestRepository.find({
+            where: { receiver: user },
+            relations: { receiver: true, creator: true }
+        }));
     }
 }
